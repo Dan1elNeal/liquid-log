@@ -4,48 +4,38 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 
-import org.influxdb.dto.BatchPoints;
-
+import ru.naumen.perfhouse.influx.IDatabaseWriter;
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.perfhouse.influx.InfluxWriter;
 
 /**
  * Created by doki on 22.10.16.
  */
-public class App {
+public class LogParser {
     /**
      * @param args [0] - sdng.log, [1] - gc.log, [2] - top, [3] - dbName, [4] timezone
      * @throws IOException
      * @throws ParseException
      */
-    private final static HashMap<Long, DataSet> DATA = new HashMap<>();
+    private static DataSetProvider DATA_SET_PROVIDER = null;
 
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
     public static void main(String[] args) throws IOException, ParseException {
-        String influxDb = null;
-
-        if (args.length > 1) {
-            influxDb = args[1];
-            influxDb = influxDb.replaceAll("-", "_");
+        if (args.length <= 1) {
+            throw new IllegalArgumentException("Arguments should be: logFileName databaseName [timezone]");
         }
 
-        InfluxDAO storage = null;
-        if (influxDb != null) {
-            storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
-                    System.getProperty("influx.password"));
-            storage.init();
-            storage.connectToDB(influxDb);
-        }
+        String dbName = args[1].replaceAll("-", "_");
+        String host = System.getProperty("influx.host");
+        String user = System.getProperty("influx.user");
+        String password = System.getProperty("influx.password");
 
-        InfluxDAO finalStorage = storage;
-        String finalInfluxDb = influxDb;
-        BatchPoints points = null;
+        InfluxDAO influxDao = new InfluxDAO(host, user, password);
+        IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao);
 
-        if (storage != null) {
-            points = storage.startBatchPoints(influxDb);
-        }
+        DATA_SET_PROVIDER = new DataSetProvider(influxWriter);
 
         String fileName = args[0];
         String timeZone = args.length > 2 ? args[2] : "GMT";
@@ -66,37 +56,11 @@ public class App {
                 throw new IllegalArgumentException(errorMessage);
         }
 
+        influxWriter.save();
+
         if (System.getProperty("NoCsv") == null) {
             System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
         }
-
-        BatchPoints finalPoints = points;
-        DATA.forEach((k, set) ->
-        {
-            ActionDoneParser dones = set.getActionsDone();
-            dones.calculate();
-            ErrorParser erros = set.getErrors();
-            if (System.getProperty("NoCsv") == null) {
-                System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", k, dones.getCount(),
-                        dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
-                        dones.getPercent99(), dones.getPercent999(), dones.getMax(), erros.getErrorCount()));
-            }
-            if (!dones.isNan()) {
-                finalStorage.storeActionsFromLog(finalPoints, finalInfluxDb, k, dones, erros);
-            }
-
-            GCParser gc = set.getGc();
-            if (!gc.isNan()) {
-                finalStorage.storeGc(finalPoints, finalInfluxDb, k, gc);
-            }
-
-            TopData cpuData = set.cpuData();
-            if (!cpuData.isNan()) {
-                finalStorage.storeTop(finalPoints, finalInfluxDb, k, cpuData);
-            }
-        });
-
-        storage.writeBatch(points);
     }
 
     private static void parseLogFile(String fileName, IDataParser dataParser) throws IOException, ParseException {
@@ -114,9 +78,11 @@ public class App {
                 long count = time / FIVE_MINUTES;
                 long key = count * FIVE_MINUTES;
 
-                DataSet dataSet = DATA.computeIfAbsent(key, k -> new DataSet());
+                DataSet dataSet = DATA_SET_PROVIDER.get(key);
                 dataParser.parseLine(dataSet, line);
             }
+
+            DATA_SET_PROVIDER.flush();
         }
     }
 }
