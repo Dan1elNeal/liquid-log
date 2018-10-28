@@ -18,8 +18,6 @@ public class LogParser {
      * @throws IOException
      * @throws ParseException
      */
-    private static DataSetProvider DATA_SET_PROVIDER = null;
-
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
     public static void main(String[] args) throws IOException, ParseException {
@@ -35,7 +33,7 @@ public class LogParser {
         InfluxDAO influxDao = new InfluxDAO(host, user, password);
         IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao);
 
-        DATA_SET_PROVIDER = new DataSetProvider(influxWriter);
+        DataSetProvider dataSetProvider = new DataSetProvider(influxWriter);
 
         String fileName = args[0];
         String timeZone = args.length > 2 ? args[2] : "GMT";
@@ -43,13 +41,13 @@ public class LogParser {
 
         switch (mode) {
             case "sdng":
-                parseLogFile(fileName, new SdngDataParser(timeZone));
+                parseLogFile(fileName, dataSetProvider, new SdngDataParser(timeZone));
                 break;
             case "gc":
-                parseLogFile(fileName, new GcDataParser(timeZone));
+                parseLogFile(fileName, dataSetProvider, new GcDataParser(timeZone));
                 break;
             case "top":
-                parseLogFile(fileName, new TopDataParser(fileName, timeZone));
+                parseLogFile(fileName, dataSetProvider, new TopDataParser(fileName, timeZone));
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
@@ -63,7 +61,11 @@ public class LogParser {
         }
     }
 
-    private static void parseLogFile(String fileName, IDataParser dataParser) throws IOException, ParseException {
+    private static void parseLogFile(
+            String fileName,
+            DataSetProvider dataSetProvider,
+            IDataParser dataParser
+    ) throws IOException, ParseException {
         ITimeParser timeParser = dataParser.getTimeParser();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -78,11 +80,11 @@ public class LogParser {
                 long count = time / FIVE_MINUTES;
                 long key = count * FIVE_MINUTES;
 
-                DataSet dataSet = DATA_SET_PROVIDER.get(key);
+                DataSet dataSet = dataSetProvider.get(key);
                 dataParser.parseLine(dataSet, line);
             }
 
-            DATA_SET_PROVIDER.flush();
+            dataSetProvider.flush();
         }
     }
 }
