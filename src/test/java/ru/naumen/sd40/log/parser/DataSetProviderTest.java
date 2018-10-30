@@ -15,15 +15,6 @@ public class DataSetProviderTest {
     }
 
     @Test
-    public void mustReturnDataSet() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
-
-        DataSet dataSet = dataSetProvider.get(1L);
-
-        Assert.assertEquals(dataSet.getClass(), DataSet.class);
-    }
-
-    @Test
     public void mustReturnSameDataSet() {
         DataSetProvider dataSetProvider = new DataSetProvider(writer);
 
