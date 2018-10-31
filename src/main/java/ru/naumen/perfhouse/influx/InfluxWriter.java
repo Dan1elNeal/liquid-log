@@ -7,13 +7,16 @@ public class InfluxWriter implements IDatabaseWriter<Long, DataSet> {
     private String dbName;
     private BatchPoints points;
     private InfluxDAO storage;
+    private Boolean withTrace;
 
-    public InfluxWriter(String dbName, InfluxDAO storage) {
+    public InfluxWriter(String dbName, InfluxDAO storage, Boolean withTrace) {
         this.dbName = dbName;
 
         this.storage = storage;
         this.storage.init();
         this.storage.connectToDB(dbName);
+
+        this.withTrace = withTrace;
 
         this.points = storage.startBatchPoints(dbName);
     }
@@ -24,7 +27,7 @@ public class InfluxWriter implements IDatabaseWriter<Long, DataSet> {
         dones.calculate();
         ErrorParser errors = dataSet.getErrors();
 
-        if (System.getProperty("NoCsv") == null) {
+        if (this.withTrace) {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
                     dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
                     dones.getPercent99(), dones.getPercent999(), dones.getMax(), errors.getErrorCount()));

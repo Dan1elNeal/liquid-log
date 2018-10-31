@@ -20,34 +20,33 @@ public class LogParser {
      */
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
-    public static void main(String[] args) throws IOException, ParseException {
-        if (args.length <= 1) {
-            throw new IllegalArgumentException("Arguments should be: logFileName databaseName [timezone]");
-        }
-
-        String dbName = args[1].replaceAll("-", "_");
+    public static void parse(
+            String dbName,
+            String mode,
+            String fileName,
+            String timezone,
+            Boolean withTrace
+    ) throws IOException, ParseException {
         String host = System.getProperty("influx.host");
         String user = System.getProperty("influx.user");
         String password = System.getProperty("influx.password");
 
+        dbName = dbName.replaceAll("-", "_");
+
         InfluxDAO influxDao = new InfluxDAO(host, user, password);
-        IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao);
+        IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
 
         DataSetProvider dataSetProvider = new DataSetProvider(influxWriter);
 
-        String fileName = args[0];
-        String timeZone = args.length > 2 ? args[2] : "GMT";
-        String mode = System.getProperty("parse.mode", "");
-
         switch (mode) {
             case "sdng":
-                parseLogFile(fileName, dataSetProvider, new SdngDataParser(timeZone));
+                parseLogFile(fileName, dataSetProvider, new SdngDataParser(timezone));
                 break;
             case "gc":
-                parseLogFile(fileName, dataSetProvider, new GcDataParser(timeZone));
+                parseLogFile(fileName, dataSetProvider, new GcDataParser(timezone));
                 break;
             case "top":
-                parseLogFile(fileName, dataSetProvider, new TopDataParser(fileName, timeZone));
+                parseLogFile(fileName, dataSetProvider, new TopDataParser(fileName, timezone));
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
@@ -56,7 +55,7 @@ public class LogParser {
 
         influxWriter.save();
 
-        if (System.getProperty("NoCsv") == null) {
+        if (withTrace) {
             System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
         }
     }

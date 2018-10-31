@@ -31,3 +31,8 @@ table {
         .container {
         	width: 85%;
         }
+
+.parse-form > *
+{
+  display: block;
+}
