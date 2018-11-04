@@ -23,7 +23,7 @@ public class ParseController {
             @RequestParam(name = "timezone", defaultValue = "GMT") String timezone,
             @RequestParam(name = "trace", defaultValue = "show") String trace
     ) throws ParseException, IOException {
-        Boolean withTrace = trace.equals("show");
+        boolean withTrace = trace.equals("show");
         LogParser.parse(dbName, mode, filePath, timezone, withTrace);
 
         return new ResponseEntity<>("Successfully completed!", HttpStatus.OK);

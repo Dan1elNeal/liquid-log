@@ -25,7 +25,7 @@ public class LogParser {
             String mode,
             String fileName,
             String timezone,
-            Boolean withTrace
+            boolean withTrace
     ) throws IOException, ParseException {
         String host = System.getProperty("influx.host");
         String user = System.getProperty("influx.user");
