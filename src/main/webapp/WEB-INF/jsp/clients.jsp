@@ -41,35 +41,57 @@
     	}
     </script>
 <div class="container">
-	<br>
+    <h1>Liquid Log</h1>
 	<div class="alert alert-info">
   		<h3><strong>Attention!</strong><br>All requests for stored data are made with UTC time.<br>Requested data will be displayed in your browsers timezone.</h3>
-	</div>
-	<br>
-    <h1>Client list</h1>
-    <table class="table table-striped table-fixed"> <!-- table-bordered  -->
-        <thead class="thead-inverse">
-            <th class="col-xs-6">Name</th>
-            <th class="col-xs-6">Link</th>
-        </thead>
-         <tbody>
-         <% for(String client:(List<String>)request.getAttribute("clients")) { %>
-            <tr>
-                <td class="col-xs-6">
-                    <h4><span><%= client %></span></h2>
-                </td>
-                <td class="col-xs-6">
-                	<a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("prevMonthLinks")).get(client) %>'>Previous Month</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("monthlinks")).get(client) %>'>Month</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last2016links")).get(client) %>'>Last 7 days</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last864links")).get(client) %>'>Last 3 days</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("links")).get(client) %>'>Yesterday</a>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#customModal" onclick="setupModal('<%=client %>')">Custom request</button>
-                </td>
-            </tr>
-           <% } %>
-        </tbody>
+    </div>
+    <section>
+        <h2>Send log to parse</h2>
+        <form class="parse-form" action="/parse" method="post" target="_blank">
+            <label>Database Name: <input name="dbname" type="text" required></label>
+            <label>
+                Parse mode:
+                <select name="mode">
+                    <option value="sdng" selected>sdng</option>
+                    <option value="gc">gc</option>
+                    <option value="top">top</option>
+                </select>
+            </label>
+            <label>File Path: <input name="filepath" type="text" required></label>
+            <label>Timezone: <input name="timezone" type="text"></label>
+            <div>
+                <label>Show trace: <input name="dzen" type="radio" value="show" checked> </label>
+                <label>Doesn't show trace: <input name="dzen" type="radio" value=""></label>
+            </div>
+            <button class="parse-form__button" type="submit">Parse log!</button>
+        </form>
+    </section>
+    <section>
+        <h2>Client List</h2>
+        <table class="table table-striped table-fixed"> <!-- table-bordered  -->
+            <thead class="thead-inverse">
+                <th class="col-xs-6">Name</th>
+                <th class="col-xs-6">Link</th>
+            </thead>
+            <tbody>
+            <% for(String client:(List<String>)request.getAttribute("clients")) { %>
+                <tr>
+                    <td class="col-xs-6">
+                        <h4><span><%= client %></span></h2>
+                    </td>
+                    <td class="col-xs-6">
+                        <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("prevMonthLinks")).get(client) %>'>Previous Month</a>
+                        <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("monthlinks")).get(client) %>'>Month</a>
+                        <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last2016links")).get(client) %>'>Last 7 days</a>
+                        <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last864links")).get(client) %>'>Last 3 days</a>
+                        <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("links")).get(client) %>'>Yesterday</a>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#customModal" onclick="setupModal('<%=client %>')">Custom request</button>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
         </table>
+    </section>
 </div>
 
 <div class="modal fade" id="customModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
