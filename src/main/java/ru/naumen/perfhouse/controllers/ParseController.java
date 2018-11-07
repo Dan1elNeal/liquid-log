@@ -1,5 +1,6 @@
 package ru.naumen.perfhouse.controllers;
 ;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,9 @@ import java.text.ParseException;
 
 @Controller
 public class ParseController {
+    @Autowired
+    private LogParser logParser;
+
     @RequestMapping(path = "/parse", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity parseLog(
@@ -24,7 +28,7 @@ public class ParseController {
             @RequestParam(name = "trace", defaultValue = "show") String trace
     ) throws ParseException, IOException {
         boolean withTrace = trace.equals("show");
-        LogParser.parse(dbName, mode, filePath, timezone, withTrace);
+        logParser.parse(dbName, mode, filePath, timezone, withTrace);
 
         return new ResponseEntity<>("Successfully completed!", HttpStatus.OK);
     }

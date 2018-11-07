@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.IDatabaseWriter;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.perfhouse.influx.InfluxWriter;
@@ -12,6 +14,7 @@ import ru.naumen.perfhouse.influx.InfluxWriter;
 /**
  * Created by doki on 22.10.16.
  */
+@Component
 public class LogParser {
     /**
      * @param args [0] - sdng.log, [1] - gc.log, [2] - top, [3] - dbName, [4] timezone
@@ -20,20 +23,18 @@ public class LogParser {
      */
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
-    public static void parse(
+    @Autowired
+    private InfluxDAO influxDao;
+
+    public void parse(
             String dbName,
             String mode,
             String fileName,
             String timezone,
             boolean withTrace
     ) throws IOException, ParseException {
-        String host = System.getProperty("influx.host");
-        String user = System.getProperty("influx.user");
-        String password = System.getProperty("influx.password");
-
         dbName = dbName.replaceAll("-", "_");
 
-        InfluxDAO influxDao = new InfluxDAO(host, user, password);
         IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
 
         DataSetProvider dataSetProvider = new DataSetProvider(influxWriter);
@@ -60,7 +61,7 @@ public class LogParser {
         }
     }
 
-    private static void parseLogFile(
+    private void parseLogFile(
             String fileName,
             DataSetProvider dataSetProvider,
             IDataParser dataParser
