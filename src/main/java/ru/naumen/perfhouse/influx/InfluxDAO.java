@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.swing.*;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
