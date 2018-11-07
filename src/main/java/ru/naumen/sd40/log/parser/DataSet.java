@@ -3,48 +3,25 @@ package ru.naumen.sd40.log.parser;
 /**
  * Created by doki on 22.10.16.
  */
-public class DataSet
-{
-    private ActionDoneParser actionsDone;
-    private ErrorParser errors;
-    private GCParser gc;
+public class DataSet {
+    private GCData gcData = new GCData();
+    private ErrorData errorData = new ErrorData();
+    private ActionDoneData actionsDoneData = new ActionDoneData();
     private TopData cpuData = new TopData();
 
-    public DataSet()
-    {
-        actionsDone = new ActionDoneParser();
-        errors = new ErrorParser();
-        gc = new GCParser();
+    public ActionDoneData getActionsDone() {
+        return actionsDoneData;
     }
 
-    public void parseLine(String line)
-    {
-        errors.parseLine(line);
-        actionsDone.parseLine(line);
+    public ErrorData getErrors() {
+        return errorData;
     }
 
-    public void parseGcLine(String line)
-    {
-        gc.parseLine(line);
+    public GCData getGc() {
+        return gcData;
     }
 
-    public ActionDoneParser getActionsDone()
-    {
-        return actionsDone;
-    }
-
-    public ErrorParser getErrors()
-    {
-        return errors;
-    }
-
-    public GCParser getGc()
-    {
-        return gc;
-    }
-
-    public TopData cpuData()
-    {
+    public TopData cpuData() {
         return cpuData;
     }
 }

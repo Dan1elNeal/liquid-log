@@ -23,21 +23,22 @@ public class InfluxWriter implements IDatabaseWriter<Long, DataSet> {
 
     @Override
     public void write(Long key, DataSet dataSet) {
-        ActionDoneParser dones = dataSet.getActionsDone();
+        ActionDoneData dones = dataSet.getActionsDone();
         dones.calculate();
-        ErrorParser errors = dataSet.getErrors();
+        ErrorData errors = dataSet.getErrors();
 
         if (this.withTrace) {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
                     dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
-                    dones.getPercent99(), dones.getPercent999(), dones.getMax(), errors.getErrorCount()));
+                    dones.getPercent99(), dones.getPercent999(), dones.getMax(),
+                    errors.getErrorCount()));
         }
 
         if (!dones.isNan()) {
             storage.storeActionsFromLog(points, dbName, key, dones, errors);
         }
 
-        GCParser gc = dataSet.getGc();
+        GCData gc = dataSet.getGc();
         if (!gc.isNan()) {
             storage.storeGc(points, dbName, key, gc);
         }

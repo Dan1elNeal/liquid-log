@@ -5,44 +5,24 @@ import java.util.regex.Pattern;
 /**
  * Created by doki on 22.10.16.
  */
-public class ErrorParser
-{
-    long warnCount;
-    long errorCount;
-    long fatalCount;
+public class ErrorParser {
+    private Pattern warnRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
+    private Pattern errorRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
+    private Pattern fatalRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
 
-    Pattern warnRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
-    Pattern errorRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
-    Pattern fatalRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
+    void parseLine(DataSet dataSet, String line) {
+        ErrorData data = dataSet.getErrors();
 
-    void parseLine(String line)
-    {
-        if (warnRegEx.matcher(line).find())
-        {
-            warnCount++;
+        if (warnRegEx.matcher(line).find()) {
+            data.addWarning();
         }
-        if (errorRegEx.matcher(line).find())
-        {
-            errorCount++;
+
+        if (errorRegEx.matcher(line).find()) {
+            data.addError();
         }
-        if (fatalRegEx.matcher(line).find())
-        {
-            fatalCount++;
+
+        if (fatalRegEx.matcher(line).find()) {
+            data.addFatal();
         }
-    }
-
-    public long getWarnCount()
-    {
-        return warnCount;
-    }
-
-    public long getErrorCount()
-    {
-        return errorCount;
-    }
-
-    public long getFatalCount()
-    {
-        return fatalCount;
     }
 }
