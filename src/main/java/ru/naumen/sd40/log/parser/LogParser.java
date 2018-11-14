@@ -26,6 +26,28 @@ public class LogParser {
     @Autowired
     private InfluxDAO influxDao;
 
+    @Autowired
+    private SdngDataParser sdngDataParser;
+
+    @Autowired
+    private GcDataParser gcDataParser;
+
+    @Autowired
+    private TopDataParser topDataParser;
+
+    @Autowired
+    private SdngTimeParser sdngTimeParser;
+
+    @Autowired
+    private GcTimeParser gcTimeParser;
+
+    @Autowired
+    private TopTimeParser topTimeParser;
+
+    private IDataParser dataParser;
+    private DataSetProvider dataSetProvider;
+    private ITimeParser timeParser;
+
     public void parse(
             String dbName,
             String mode,
@@ -33,26 +55,28 @@ public class LogParser {
             String timezone,
             boolean withTrace
     ) throws IOException, ParseException {
-        dbName = dbName.replaceAll("-", "_");
-
         IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
-
-        DataSetProvider dataSetProvider = new DataSetProvider(influxWriter);
+        dataSetProvider = new DataSetProvider(influxWriter);
 
         switch (mode) {
             case "sdng":
-                parseLogFile(fileName, dataSetProvider, new SdngDataParser(timezone));
+                dataParser = sdngDataParser;
+                timeParser = sdngTimeParser;
                 break;
             case "gc":
-                parseLogFile(fileName, dataSetProvider, new GcDataParser(timezone));
+                dataParser = gcDataParser;
+                timeParser = topTimeParser;
                 break;
             case "top":
-                parseLogFile(fileName, dataSetProvider, new TopDataParser(fileName, timezone));
+                dataParser = topDataParser;
+                timeParser = topTimeParser;
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
                 throw new IllegalArgumentException(errorMessage);
         }
+
+        parseLogFile(fileName, timezone);
 
         influxWriter.save();
 
@@ -61,12 +85,9 @@ public class LogParser {
         }
     }
 
-    private void parseLogFile(
-            String fileName,
-            DataSetProvider dataSetProvider,
-            IDataParser dataParser
-    ) throws IOException, ParseException {
-        ITimeParser timeParser = dataParser.getTimeParser();
+    private void parseLogFile(String fileName, String timezone) throws IOException, ParseException {
+        timeParser.setTimeZone(timezone);
+        timeParser.setLogFileName(fileName);
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;

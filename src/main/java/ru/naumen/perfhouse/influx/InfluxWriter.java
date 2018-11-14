@@ -10,7 +10,7 @@ public class InfluxWriter implements IDatabaseWriter<Long, DataSet> {
     private Boolean withTrace;
 
     public InfluxWriter(String dbName, InfluxDAO storage, Boolean withTrace) {
-        this.dbName = dbName;
+        this.dbName = dbName.replaceAll("-", "_");
 
         this.storage = storage;
         this.storage.init();

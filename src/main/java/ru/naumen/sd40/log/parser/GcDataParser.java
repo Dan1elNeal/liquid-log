@@ -1,16 +1,13 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class GcDataParser implements IDataParser {
-    private ITimeParser timeParser;
-
     private Pattern gcExecutionTime = Pattern.compile(".*real=(.*)secs.*");
-
-    public GcDataParser(String zone) {
-        this.timeParser = new GcTimeParser(zone);
-    }
 
     @Override
     public void parseLine(DataSet dataSet, String line) {
@@ -21,10 +18,5 @@ public class GcDataParser implements IDataParser {
             double executionTime = Double.parseDouble(matcher.group(1).trim().replace(',', '.'));
             data.addExecutionTime(executionTime);
         }
-    }
-
-    @Override
-    public ITimeParser getTimeParser() {
-        return this.timeParser;
     }
 }

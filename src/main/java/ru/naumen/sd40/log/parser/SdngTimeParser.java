@@ -1,5 +1,8 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -7,6 +10,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
+@Scope("prototype")
 public class SdngTimeParser implements ITimeParser {
     private static final Pattern TIME_PATTERN =
             Pattern.compile("^\\d+ \\[.*?\\] \\((\\d{2} .{3} \\d{4} \\d{2}:\\d{2}:\\d{2},\\d{3})\\)");
@@ -14,8 +19,14 @@ public class SdngTimeParser implements ITimeParser {
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS", new Locale("ru", "RU"));
 
-    public SdngTimeParser(String zone) {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(zone));
+    @Override
+    public void setTimeZone(String timezone) {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
+    }
+
+    @Override
+    public void setLogFileName(String logFileName) {
+
     }
 
     @Override
