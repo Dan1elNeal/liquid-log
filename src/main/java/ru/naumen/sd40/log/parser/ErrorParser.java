@@ -9,22 +9,22 @@ import java.util.regex.Pattern;
  */
 @Component
 public class ErrorParser implements IDataParser {
-    private Pattern warnRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
-    private Pattern errorRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
-    private Pattern fatalRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
+    private final static Pattern WARN_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
+    private final static Pattern ERROR_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
+    private final static Pattern FATAL_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
 
     public void parseLine(DataSet dataSet, String line) {
         ErrorData data = dataSet.getErrors();
 
-        if (warnRegEx.matcher(line).find()) {
+        if (WARN_REG_EX.matcher(line).find()) {
             data.addWarning();
         }
 
-        if (errorRegEx.matcher(line).find()) {
+        if (ERROR_REG_EX.matcher(line).find()) {
             data.addError();
         }
 
-        if (fatalRegEx.matcher(line).find()) {
+        if (FATAL_REG_EX.matcher(line).find()) {
             data.addFatal();
         }
     }

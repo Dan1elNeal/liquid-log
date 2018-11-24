@@ -18,10 +18,10 @@ public class ActionDoneParser implements IDataParser {
         EXCLUDED_ACTIONS.add("EventAction".toLowerCase());
     }
 
-    Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
+    private final static Pattern DONE_REG_EX = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
 
     public void parseLine(DataSet dataSet, String line) {
-        Matcher matcher = doneRegEx.matcher(line);
+        Matcher matcher = DONE_REG_EX.matcher(line);
         ActionDoneData data = dataSet.getActionsDone();
 
         if (matcher.find()) {

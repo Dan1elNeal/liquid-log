@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 
 @Component
 public class GcDataParser implements IDataParser {
-    private Pattern gcExecutionTime = Pattern.compile(".*real=(.*)secs.*");
+    private final static Pattern GC_EXECUTION_TIME = Pattern.compile(".*real=(.*)secs.*");
 
     @Override
     public void parseLine(DataSet dataSet, String line) {
-        Matcher matcher = gcExecutionTime.matcher(line);
+        Matcher matcher = GC_EXECUTION_TIME.matcher(line);
         GCData data = dataSet.getGc();
 
         if (matcher.find()) {

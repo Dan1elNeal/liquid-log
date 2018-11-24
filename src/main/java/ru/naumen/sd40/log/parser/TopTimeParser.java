@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class TopTimeParser implements ITimeParser {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
 
-    private Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
+    private final static Pattern TIME_REGEX = Pattern.compile("^_+ (\\S+)");
 
     private String dataDate;
 
@@ -37,7 +37,7 @@ public class TopTimeParser implements ITimeParser {
 
     @Override
     public long parseLine(String line) throws ParseException {
-        Matcher matcher = timeRegex.matcher(line);
+        Matcher matcher = TIME_REGEX.matcher(line);
         if (matcher.find()) {
             this.lastParsedTime = sdf.parse(dataDate + matcher.group(1)).getTime();
         }
