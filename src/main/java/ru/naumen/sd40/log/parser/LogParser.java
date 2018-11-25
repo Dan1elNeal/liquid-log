@@ -44,9 +44,7 @@ public class LogParser {
     @Autowired
     private TopTimeParser topTimeParser;
 
-    private IDataParser dataParser;
     private DataSetProvider dataSetProvider;
-    private ITimeParser timeParser;
 
     public void parse(
             String dbName,
@@ -57,6 +55,9 @@ public class LogParser {
     ) throws IOException, ParseException {
         IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
         dataSetProvider = new DataSetProvider(influxWriter);
+
+        IDataParser dataParser;
+        ITimeParser timeParser;
 
         switch (mode) {
             case "sdng":
@@ -76,7 +77,7 @@ public class LogParser {
                 throw new IllegalArgumentException(errorMessage);
         }
 
-        parseLogFile(fileName, timezone);
+        parseLogFile(fileName, timezone, dataParser, timeParser);
 
         influxWriter.save();
 
@@ -85,7 +86,12 @@ public class LogParser {
         }
     }
 
-    private void parseLogFile(String fileName, String timezone) throws IOException, ParseException {
+    private void parseLogFile(
+            String fileName,
+            String timezone,
+            IDataParser dataParser,
+            ITimeParser timeParser
+    ) throws IOException, ParseException {
         timeParser.setTimeZone(timezone);
         timeParser.setLogFileName(fileName);
 
