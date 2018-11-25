@@ -35,15 +35,6 @@ public class LogParser {
     @Autowired
     private TopDataParser topDataParser;
 
-    @Autowired
-    private SdngTimeParser sdngTimeParser;
-
-    @Autowired
-    private GcTimeParser gcTimeParser;
-
-    @Autowired
-    private TopTimeParser topTimeParser;
-
     private DataSetProvider dataSetProvider;
 
     public void parse(
@@ -62,15 +53,15 @@ public class LogParser {
         switch (mode) {
             case "sdng":
                 dataParser = sdngDataParser;
-                timeParser = sdngTimeParser;
+                timeParser = new SdngTimeParser();
                 break;
             case "gc":
                 dataParser = gcDataParser;
-                timeParser = topTimeParser;
+                timeParser = new GcTimeParser();
                 break;
             case "top":
                 dataParser = topDataParser;
-                timeParser = topTimeParser;
+                timeParser = new TopTimeParser();
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
