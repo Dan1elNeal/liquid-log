@@ -14,8 +14,14 @@ public class SdngTimeParser implements ITimeParser {
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS", new Locale("ru", "RU"));
 
-    public SdngTimeParser(String zone) {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(zone));
+    @Override
+    public void setTimeZone(String timezone) {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
+    }
+
+    @Override
+    public void setLogFileName(String logFileName) {
+
     }
 
     @Override

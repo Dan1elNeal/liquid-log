@@ -15,8 +15,14 @@ public class GcTimeParser implements ITimeParser {
     private static final Pattern PATTERN = Pattern
             .compile("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}\\+\\d{4}).*");
 
-    public GcTimeParser(String zone) {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(zone));
+    @Override
+    public void setTimeZone(String timezone) {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
+    }
+
+    @Override
+    public void setLogFileName(String logFileName) {
+
     }
 
     @Override

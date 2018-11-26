@@ -1,27 +1,30 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.util.regex.Pattern;
 
 /**
  * Created by doki on 22.10.16.
  */
-public class ErrorParser {
-    private Pattern warnRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
-    private Pattern errorRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
-    private Pattern fatalRegEx = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
+@Component
+public class ErrorParser implements IDataParser {
+    private final static Pattern WARN_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) WARN");
+    private final static Pattern ERROR_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) ERROR");
+    private final static Pattern FATAL_REG_EX = Pattern.compile("^\\d+ \\[.+?\\] \\(.+?\\) FATAL");
 
-    void parseLine(DataSet dataSet, String line) {
+    public void parseLine(DataSet dataSet, String line) {
         ErrorData data = dataSet.getErrors();
 
-        if (warnRegEx.matcher(line).find()) {
+        if (WARN_REG_EX.matcher(line).find()) {
             data.addWarning();
         }
 
-        if (errorRegEx.matcher(line).find()) {
+        if (ERROR_REG_EX.matcher(line).find()) {
             data.addError();
         }
 
-        if (fatalRegEx.matcher(line).find()) {
+        if (FATAL_REG_EX.matcher(line).find()) {
             data.addFatal();
         }
     }

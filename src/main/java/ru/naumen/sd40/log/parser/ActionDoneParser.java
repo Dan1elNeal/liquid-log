@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -8,17 +10,18 @@ import java.util.regex.Pattern;
 /**
  * Created by doki on 22.10.16.
  */
-public class ActionDoneParser {
+@Component
+public class ActionDoneParser implements IDataParser {
     private static Set<String> EXCLUDED_ACTIONS = new HashSet<>();
 
     static {
         EXCLUDED_ACTIONS.add("EventAction".toLowerCase());
     }
 
-    Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
+    private final static Pattern DONE_REG_EX = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
 
     public void parseLine(DataSet dataSet, String line) {
-        Matcher matcher = doneRegEx.matcher(line);
+        Matcher matcher = DONE_REG_EX.matcher(line);
         ActionDoneData data = dataSet.getActionsDone();
 
         if (matcher.find()) {
@@ -67,7 +70,6 @@ public class ActionDoneParser {
 
             if (actionInLowerCase.matches("(?i)[a-zA-Z]+search[a-zA-Z]+")) {
                 data.addSearchAction();
-                return;
             }
 
         }

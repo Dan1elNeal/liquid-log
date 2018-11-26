@@ -26,6 +26,17 @@ public class LogParser {
     @Autowired
     private InfluxDAO influxDao;
 
+    @Autowired
+    private SdngDataParser sdngDataParser;
+
+    @Autowired
+    private GcDataParser gcDataParser;
+
+    @Autowired
+    private TopDataParser topDataParser;
+
+    private DataSetProvider dataSetProvider;
+
     public void parse(
             String dbName,
             String mode,
@@ -33,26 +44,31 @@ public class LogParser {
             String timezone,
             boolean withTrace
     ) throws IOException, ParseException {
-        dbName = dbName.replaceAll("-", "_");
-
         IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
+        dataSetProvider = new DataSetProvider(influxWriter);
 
-        DataSetProvider dataSetProvider = new DataSetProvider(influxWriter);
+        IDataParser dataParser;
+        ITimeParser timeParser;
 
         switch (mode) {
             case "sdng":
-                parseLogFile(fileName, dataSetProvider, new SdngDataParser(timezone));
+                dataParser = sdngDataParser;
+                timeParser = new SdngTimeParser();
                 break;
             case "gc":
-                parseLogFile(fileName, dataSetProvider, new GcDataParser(timezone));
+                dataParser = gcDataParser;
+                timeParser = new GcTimeParser();
                 break;
             case "top":
-                parseLogFile(fileName, dataSetProvider, new TopDataParser(fileName, timezone));
+                dataParser = topDataParser;
+                timeParser = new TopTimeParser();
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
                 throw new IllegalArgumentException(errorMessage);
         }
+
+        parseLogFile(fileName, timezone, dataParser, timeParser);
 
         influxWriter.save();
 
@@ -63,10 +79,12 @@ public class LogParser {
 
     private void parseLogFile(
             String fileName,
-            DataSetProvider dataSetProvider,
-            IDataParser dataParser
+            String timezone,
+            IDataParser dataParser,
+            ITimeParser timeParser
     ) throws IOException, ParseException {
-        ITimeParser timeParser = dataParser.getTimeParser();
+        timeParser.setTimeZone(timezone);
+        timeParser.setLogFileName(fileName);
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
