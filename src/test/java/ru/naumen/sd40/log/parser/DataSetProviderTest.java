@@ -30,6 +30,8 @@ public class DataSetProviderTest {
     public void mustReturnDifferentDataSet() {
         DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
+        when(dataSetFactory.create()).then(invocationOnMock -> new DataSet());
+
         DataSet firstDataSet = dataSetProvider.get(1L);
         DataSet secondDataSet = dataSetProvider.get(2L);
 
@@ -39,6 +41,8 @@ public class DataSetProviderTest {
     @Test
     public void mustWriteDataSet() {
         DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
+
+        when(dataSetFactory.create()).thenReturn(new DataSet());
 
         DataSet dataSet = dataSetProvider.get(1L);
         dataSetProvider.get(2L);
@@ -60,6 +64,8 @@ public class DataSetProviderTest {
     public void mustWriteOnFlush() {
         DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
+        when(dataSetFactory.create()).thenReturn(new DataSet());
+
         DataSet dataSet = dataSetProvider.get(1L);
         dataSetProvider.flush();
 
@@ -69,6 +75,8 @@ public class DataSetProviderTest {
     @Test
     public void mustReturnNewDataSetAfterFlush() {
         DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
+
+        when(dataSetFactory.create()).then(invocationOnMock -> new DataSet());
 
         DataSet firstDataSet = dataSetProvider.get(1L);
         dataSetProvider.flush();
