@@ -6,13 +6,13 @@ import org.junit.Test;
 
 public class ActionDoneParserTest {
     private ActionDoneParser parser;
-    private DataSet dataSet;
+    private SdngDataSet dataSet;
     private ActionDoneData actionDoneData;
 
     @Before
     public void setup() {
         parser = new ActionDoneParser();
-        dataSet = new DataSet();
+        dataSet = new SdngDataSet();
         actionDoneData = dataSet.getActionsDone();
     }
 

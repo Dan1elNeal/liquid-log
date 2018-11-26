@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * Created by doki on 22.10.16.
  */
 @Component
-public class ActionDoneParser implements IDataParser {
+public class ActionDoneParser {
     private static Set<String> EXCLUDED_ACTIONS = new HashSet<>();
 
     static {
@@ -20,7 +20,7 @@ public class ActionDoneParser implements IDataParser {
 
     private final static Pattern DONE_REG_EX = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
 
-    public void parseLine(DataSet dataSet, String line) {
+    public void parseLine(SdngDataSet dataSet, String line) {
         Matcher matcher = DONE_REG_EX.matcher(line);
         ActionDoneData data = dataSet.getActionsDone();
 

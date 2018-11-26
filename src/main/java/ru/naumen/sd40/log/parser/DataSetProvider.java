@@ -2,19 +2,21 @@ package ru.naumen.sd40.log.parser;
 
 import ru.naumen.perfhouse.influx.IDatabaseWriter;
 
-public class DataSetProvider {
-    private IDatabaseWriter<Long, DataSet> writer;
+public class DataSetProvider<T extends DataSet> {
+    private IDatabaseWriter<Long, T> writer;
     private long currentKey;
-    private DataSet currentDataSet = null;
+    private IDataSetFactory<T> dataSetFactory;
+    private T currentDataSet = null;
 
-    public DataSetProvider(IDatabaseWriter<Long, DataSet> writer) {
+    public DataSetProvider(IDatabaseWriter<Long, T> writer, IDataSetFactory<T> dataSetFactory) {
         this.writer = writer;
+        this.dataSetFactory = dataSetFactory;
     }
 
-    public DataSet get(Long key) {
+    public T get(Long key) {
         if (currentDataSet == null) {
             currentKey = key;
-            currentDataSet = new DataSet();
+            currentDataSet = dataSetFactory.create();
 
             return currentDataSet;
         }
@@ -22,7 +24,7 @@ public class DataSetProvider {
         if (key != currentKey) {
             writer.write(currentKey, currentDataSet);
             currentKey = key;
-            currentDataSet = new DataSet();
+            currentDataSet = dataSetFactory.create();
         }
 
         return currentDataSet;

@@ -8,15 +8,17 @@ import ru.naumen.perfhouse.influx.IDatabaseWriter;
 
 public class DataSetProviderTest {
     private IDatabaseWriter<Long, DataSet> writer;
+    private IDataSetFactory<DataSet> dataSetFactory;
 
     @Before
     public void setup() {
         writer = mock(IDatabaseWriter.class);
+        dataSetFactory = mock(IDataSetFactory.class);
     }
 
     @Test
     public void mustReturnSameDataSet() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         DataSet firstDataSet = dataSetProvider.get(1L);
         DataSet secondDataSet = dataSetProvider.get(1L);
@@ -26,7 +28,7 @@ public class DataSetProviderTest {
 
     @Test
     public void mustReturnDifferentDataSet() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         DataSet firstDataSet = dataSetProvider.get(1L);
         DataSet secondDataSet = dataSetProvider.get(2L);
@@ -36,7 +38,7 @@ public class DataSetProviderTest {
 
     @Test
     public void mustWriteDataSet() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         DataSet dataSet = dataSetProvider.get(1L);
         dataSetProvider.get(2L);
@@ -46,7 +48,7 @@ public class DataSetProviderTest {
 
     @Test
     public void mustNotWriteDataSet() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         dataSetProvider.get(1L);
         dataSetProvider.get(1L);
@@ -56,7 +58,7 @@ public class DataSetProviderTest {
 
     @Test
     public void mustWriteOnFlush() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         DataSet dataSet = dataSetProvider.get(1L);
         dataSetProvider.flush();
@@ -66,7 +68,7 @@ public class DataSetProviderTest {
 
     @Test
     public void mustReturnNewDataSetAfterFlush() {
-        DataSetProvider dataSetProvider = new DataSetProvider(writer);
+        DataSetProvider dataSetProvider = new DataSetProvider(writer, dataSetFactory);
 
         DataSet firstDataSet = dataSetProvider.get(1L);
         dataSetProvider.flush();
