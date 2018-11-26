@@ -1,16 +1,11 @@
 package ru.naumen.sd40.log.parser;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
-@Scope("prototype")
 public class TopTimeParser implements ITimeParser {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
 
