@@ -1,7 +1,9 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.Sdng;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.naumen.sd40.log.parser.IDataParser;
+import ru.naumen.sd40.log.parser.IDataSetFactory;
 
 @Component
 public class SdngDataParser implements IDataParser<SdngDataSet> {

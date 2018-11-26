@@ -1,7 +1,8 @@
-package ru.naumen.perfhouse.influx;
+package ru.naumen.perfhouse.writers;
 
-import ru.naumen.sd40.log.parser.GCData;
-import ru.naumen.sd40.log.parser.GcDataSet;
+import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.Gc.GCData;
+import ru.naumen.sd40.log.parser.Gc.GcDataSet;
 
 public class GcInfluxWriter extends InfluxWriter<GcDataSet> {
     public GcInfluxWriter(String dbName, InfluxDAO storage, Boolean withTrace) {

@@ -1,8 +1,9 @@
-package ru.naumen.perfhouse.influx;
+package ru.naumen.perfhouse.writers;
 
-import ru.naumen.sd40.log.parser.ActionDoneData;
-import ru.naumen.sd40.log.parser.ErrorData;
-import ru.naumen.sd40.log.parser.SdngDataSet;
+import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.Sdng.ActionDoneData;
+import ru.naumen.sd40.log.parser.Sdng.ErrorData;
+import ru.naumen.sd40.log.parser.Sdng.SdngDataSet;
 
 public class SdngInfluxWriter extends InfluxWriter<SdngDataSet> {
     public SdngInfluxWriter(String dbName, InfluxDAO storage, Boolean withTrace) {

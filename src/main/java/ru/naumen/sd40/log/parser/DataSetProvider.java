@@ -1,6 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
-import ru.naumen.perfhouse.influx.IDatabaseWriter;
+import ru.naumen.perfhouse.writers.IDatabaseWriter;
 
 public class DataSetProvider<T extends DataSet> {
     private IDatabaseWriter<Long, T> writer;

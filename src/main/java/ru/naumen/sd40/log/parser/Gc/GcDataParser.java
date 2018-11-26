@@ -1,7 +1,9 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.Gc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.naumen.sd40.log.parser.IDataParser;
+import ru.naumen.sd40.log.parser.IDataSetFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

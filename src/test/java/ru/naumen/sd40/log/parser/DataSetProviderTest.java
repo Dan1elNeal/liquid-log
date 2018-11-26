@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
-import ru.naumen.perfhouse.influx.IDatabaseWriter;
+import ru.naumen.perfhouse.writers.IDatabaseWriter;
 
 public class DataSetProviderTest {
     private IDatabaseWriter<Long, DataSet> writer;

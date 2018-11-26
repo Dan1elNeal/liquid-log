@@ -8,6 +8,16 @@ import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.*;
+import ru.naumen.perfhouse.writers.GcInfluxWriter;
+import ru.naumen.perfhouse.writers.IDatabaseWriter;
+import ru.naumen.perfhouse.writers.SdngInfluxWriter;
+import ru.naumen.perfhouse.writers.TopInfluxWriter;
+import ru.naumen.sd40.log.parser.Gc.GcDataParser;
+import ru.naumen.sd40.log.parser.Gc.GcTimeParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngDataParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngTimeParser;
+import ru.naumen.sd40.log.parser.Top.TopDataParser;
+import ru.naumen.sd40.log.parser.Top.TopTimeParser;
 
 /**
  * Created by doki on 22.10.16.
