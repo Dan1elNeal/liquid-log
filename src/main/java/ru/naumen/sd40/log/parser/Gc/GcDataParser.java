@@ -13,7 +13,7 @@ public class GcDataParser implements IDataParser<GcDataSet> {
     private final static Pattern GC_EXECUTION_TIME = Pattern.compile(".*real=(.*)secs.*");
 
     @Autowired
-    private static IDataSetFactory<GcDataSet> dataSetFactory;
+    private IDataSetFactory<GcDataSet> dataSetFactory;
 
     @Override
     public void parseLine(GcDataSet dataSet, String line) {
