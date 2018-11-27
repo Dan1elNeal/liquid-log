@@ -7,9 +7,17 @@ import java.text.ParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.naumen.perfhouse.influx.IDatabaseWriter;
-import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.perfhouse.influx.InfluxWriter;
+import ru.naumen.perfhouse.influx.*;
+import ru.naumen.perfhouse.writers.GcInfluxWriter;
+import ru.naumen.perfhouse.writers.IDatabaseWriter;
+import ru.naumen.perfhouse.writers.SdngInfluxWriter;
+import ru.naumen.perfhouse.writers.TopInfluxWriter;
+import ru.naumen.sd40.log.parser.Gc.GcDataParser;
+import ru.naumen.sd40.log.parser.Gc.GcTimeParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngDataParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngTimeParser;
+import ru.naumen.sd40.log.parser.Top.TopDataParser;
+import ru.naumen.sd40.log.parser.Top.TopTimeParser;
 
 /**
  * Created by doki on 22.10.16.
@@ -35,8 +43,6 @@ public class LogParser {
     @Autowired
     private TopDataParser topDataParser;
 
-    private DataSetProvider dataSetProvider;
-
     public void parse(
             String dbName,
             String mode,
@@ -44,33 +50,37 @@ public class LogParser {
             String timezone,
             boolean withTrace
     ) throws IOException, ParseException {
-        IDatabaseWriter<Long, DataSet> influxWriter = new InfluxWriter(dbName, influxDao, withTrace);
-        dataSetProvider = new DataSetProvider(influxWriter);
-
         IDataParser dataParser;
         ITimeParser timeParser;
+        IDatabaseWriter databaseWriter;
 
         switch (mode) {
             case "sdng":
                 dataParser = sdngDataParser;
                 timeParser = new SdngTimeParser();
+                databaseWriter = new SdngInfluxWriter(dbName, influxDao, withTrace);
                 break;
             case "gc":
                 dataParser = gcDataParser;
                 timeParser = new GcTimeParser();
+                databaseWriter = new GcInfluxWriter(dbName, influxDao, withTrace);
                 break;
             case "top":
                 dataParser = topDataParser;
                 timeParser = new TopTimeParser();
+                databaseWriter = new TopInfluxWriter(dbName, influxDao, withTrace);
                 break;
             default:
                 String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
                 throw new IllegalArgumentException(errorMessage);
         }
 
-        parseLogFile(fileName, timezone, dataParser, timeParser);
+        IDataSetFactory dataSetFactory = dataParser.getDataSetFactory();
+        DataSetProvider dataSetProvider = new DataSetProvider(databaseWriter, dataSetFactory);
 
-        influxWriter.save();
+        parseLogFile(fileName, timezone, dataParser, timeParser, dataSetProvider);
+
+        databaseWriter.save();
 
         if (withTrace) {
             System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
@@ -81,7 +91,8 @@ public class LogParser {
             String fileName,
             String timezone,
             IDataParser dataParser,
-            ITimeParser timeParser
+            ITimeParser timeParser,
+            DataSetProvider dataSetProvider
     ) throws IOException, ParseException {
         timeParser.setTimeZone(timezone);
         timeParser.setLogFileName(fileName);
@@ -98,7 +109,7 @@ public class LogParser {
                 long count = time / FIVE_MINUTES;
                 long key = count * FIVE_MINUTES;
 
-                DataSet dataSet = dataSetProvider.get(key);
+                IDataSet dataSet = dataSetProvider.get(key);
                 dataParser.parseLine(dataSet, line);
             }
 

@@ -3,16 +3,19 @@ package ru.naumen.sd40.log.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.naumen.sd40.log.parser.Sdng.ActionDoneData;
+import ru.naumen.sd40.log.parser.Sdng.ActionDoneParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngDataSet;
 
 public class ActionDoneParserTest {
     private ActionDoneParser parser;
-    private DataSet dataSet;
+    private SdngDataSet dataSet;
     private ActionDoneData actionDoneData;
 
     @Before
     public void setup() {
         parser = new ActionDoneParser();
-        dataSet = new DataSet();
+        dataSet = new SdngDataSet();
         actionDoneData = dataSet.getActionsDone();
     }
 
