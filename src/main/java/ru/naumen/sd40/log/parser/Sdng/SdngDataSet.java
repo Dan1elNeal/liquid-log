@@ -1,8 +1,8 @@
 package ru.naumen.sd40.log.parser.Sdng;
 
-import ru.naumen.sd40.log.parser.DataSet;
+import ru.naumen.sd40.log.parser.IDataSet;
 
-public class SdngDataSet extends DataSet {
+public class SdngDataSet implements IDataSet {
     private ErrorData errorData = new ErrorData();
     private ActionDoneData actionsDoneData = new ActionDoneData();
 

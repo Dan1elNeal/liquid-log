@@ -2,7 +2,7 @@ package ru.naumen.sd40.log.parser;
 
 import ru.naumen.perfhouse.writers.IDatabaseWriter;
 
-public class DataSetProvider<T extends DataSet> {
+public class DataSetProvider<T extends IDataSet> {
     private IDatabaseWriter<Long, T> writer;
     private long currentKey;
     private IDataSetFactory<T> dataSetFactory;

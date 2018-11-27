@@ -109,7 +109,7 @@ public class LogParser {
                 long count = time / FIVE_MINUTES;
                 long key = count * FIVE_MINUTES;
 
-                DataSet dataSet = dataSetProvider.get(key);
+                IDataSet dataSet = dataSetProvider.get(key);
                 dataParser.parseLine(dataSet, line);
             }
 

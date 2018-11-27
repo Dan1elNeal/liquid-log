@@ -1,8 +1,8 @@
 package ru.naumen.sd40.log.parser.Top;
 
-import ru.naumen.sd40.log.parser.DataSet;
+import ru.naumen.sd40.log.parser.IDataSet;
 
-public class TopDataSet extends DataSet {
+public class TopDataSet implements IDataSet {
     private TopData cpuData = new TopData();
 
     public TopData cpuData() {

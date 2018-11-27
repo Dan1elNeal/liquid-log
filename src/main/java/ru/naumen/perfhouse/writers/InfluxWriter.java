@@ -2,10 +2,9 @@ package ru.naumen.perfhouse.writers;
 
 import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.perfhouse.writers.IDatabaseWriter;
 import ru.naumen.sd40.log.parser.*;
 
-public abstract class InfluxWriter<T extends DataSet> implements IDatabaseWriter<Long, T> {
+public abstract class InfluxWriter<T extends IDataSet> implements IDatabaseWriter<Long, T> {
     protected String dbName;
     protected BatchPoints points;
     protected InfluxDAO storage;
