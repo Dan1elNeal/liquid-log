@@ -13,11 +13,11 @@ import ru.naumen.perfhouse.writers.IDatabaseWriter;
 import ru.naumen.perfhouse.writers.SdngInfluxWriter;
 import ru.naumen.perfhouse.writers.TopInfluxWriter;
 import ru.naumen.sd40.log.parser.Gc.GcDataParser;
-import ru.naumen.sd40.log.parser.Gc.GcTimeParser;
+import ru.naumen.sd40.log.parser.Gc.GcTimeParserFactory;
 import ru.naumen.sd40.log.parser.Sdng.SdngDataParser;
-import ru.naumen.sd40.log.parser.Sdng.SdngTimeParser;
+import ru.naumen.sd40.log.parser.Sdng.SdngTimeParserFactory;
 import ru.naumen.sd40.log.parser.Top.TopDataParser;
-import ru.naumen.sd40.log.parser.Top.TopTimeParser;
+import ru.naumen.sd40.log.parser.Top.TopTimeParserFactory;
 
 /**
  * Created by doki on 22.10.16.
@@ -31,17 +31,36 @@ public class LogParser {
      */
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
-    @Autowired
     private InfluxDAO influxDao;
 
-    @Autowired
     private SdngDataParser sdngDataParser;
-
-    @Autowired
     private GcDataParser gcDataParser;
+    private TopDataParser topDataParser;
+
+    private SdngTimeParserFactory sdngTimeParserFactory;
+    private GcTimeParserFactory gcTimeParserFactory;
+    private TopTimeParserFactory topTimeParserFactory;
 
     @Autowired
-    private TopDataParser topDataParser;
+    LogParser(
+            InfluxDAO influxDao,
+            SdngDataParser sdngDataParser,
+            GcDataParser gcDataParser,
+            TopDataParser topDataParser,
+            SdngTimeParserFactory sdngTimeParserFactory,
+            GcTimeParserFactory gcTimeParserFactory,
+            TopTimeParserFactory topTimeParserFactory
+    ) {
+        this.influxDao = influxDao;
+
+        this.sdngDataParser = sdngDataParser;
+        this.gcDataParser = gcDataParser;
+        this.topDataParser = topDataParser;
+
+        this.sdngTimeParserFactory = sdngTimeParserFactory;
+        this.gcTimeParserFactory = gcTimeParserFactory;
+        this.topTimeParserFactory = topTimeParserFactory;
+    }
 
     public void parse(
             String dbName,
@@ -57,17 +76,17 @@ public class LogParser {
         switch (mode) {
             case "sdng":
                 dataParser = sdngDataParser;
-                timeParser = new SdngTimeParser();
+                timeParser = sdngTimeParserFactory.create();
                 databaseWriter = new SdngInfluxWriter(dbName, influxDao, withTrace);
                 break;
             case "gc":
                 dataParser = gcDataParser;
-                timeParser = new GcTimeParser();
+                timeParser = gcTimeParserFactory.create();
                 databaseWriter = new GcInfluxWriter(dbName, influxDao, withTrace);
                 break;
             case "top":
                 dataParser = topDataParser;
-                timeParser = new TopTimeParser();
+                timeParser = topTimeParserFactory.create();
                 databaseWriter = new TopInfluxWriter(dbName, influxDao, withTrace);
                 break;
             default:
