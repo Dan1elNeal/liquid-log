@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Set" %>
 <html>
 
 <head>
@@ -52,9 +53,9 @@
             <label>
                 Parse mode:
                 <select name="mode">
-                    <option value="sdng" selected>sdng</option>
-                    <option value="gc">gc</option>
-                    <option value="top">top</option>
+                    <% for(String mode:(Set<String>)request.getAttribute("parsingModes")) { %>
+                        <option value="<%= mode %>"><%= mode %></option>
+                    <% } %>
                 </select>
             </label>
             <label>File Path: <input name="filepath" type="text" required></label>

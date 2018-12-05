@@ -3,13 +3,9 @@ package ru.naumen.sd40.log.parser.Sdng;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.IDataParser;
-import ru.naumen.sd40.log.parser.IDataSetFactory;
 
 @Component
 public class SdngDataParser implements IDataParser<SdngDataSet> {
-    @Autowired
-    private IDataSetFactory<SdngDataSet> dataSetFactory;
-
     @Autowired
     private ActionDoneParser actionDoneParser;
 
@@ -20,10 +16,5 @@ public class SdngDataParser implements IDataParser<SdngDataSet> {
     public void parseLine(SdngDataSet dataSet, String line) {
         actionDoneParser.parseLine(dataSet, line);
         errorParser.parseLine(dataSet, line);
-    }
-
-    @Override
-    public IDataSetFactory<SdngDataSet> getDataSetFactory() {
-        return dataSetFactory;
     }
 }
