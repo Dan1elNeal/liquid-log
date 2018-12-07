@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,34 +33,12 @@ public class LogParser {
     private final static int FIVE_MINUTES = 5 * 60 * 1000;
 
     private InfluxDAO influxDao;
-
-    private SdngDataParser sdngDataParser;
-    private GcDataParser gcDataParser;
-    private TopDataParser topDataParser;
-
-    private SdngTimeParserFactory sdngTimeParserFactory;
-    private GcTimeParserFactory gcTimeParserFactory;
-    private TopTimeParserFactory topTimeParserFactory;
+    private Map<String, IParsingMode> parsingModes;
 
     @Autowired
-    LogParser(
-            InfluxDAO influxDao,
-            SdngDataParser sdngDataParser,
-            GcDataParser gcDataParser,
-            TopDataParser topDataParser,
-            SdngTimeParserFactory sdngTimeParserFactory,
-            GcTimeParserFactory gcTimeParserFactory,
-            TopTimeParserFactory topTimeParserFactory
-    ) {
+    LogParser(InfluxDAO influxDao, Map<String, IParsingMode> parsingModes) {
         this.influxDao = influxDao;
-
-        this.sdngDataParser = sdngDataParser;
-        this.gcDataParser = gcDataParser;
-        this.topDataParser = topDataParser;
-
-        this.sdngTimeParserFactory = sdngTimeParserFactory;
-        this.gcTimeParserFactory = gcTimeParserFactory;
-        this.topTimeParserFactory = topTimeParserFactory;
+        this.parsingModes = parsingModes;
     }
 
     public void parse(
@@ -69,32 +48,18 @@ public class LogParser {
             String timezone,
             boolean withTrace
     ) throws IOException, ParseException {
-        IDataParser dataParser;
-        ITimeParser timeParser;
-        IDatabaseWriter databaseWriter;
+        IParsingMode parsingMode = this.parsingModes.get(mode);
 
-        switch (mode) {
-            case "sdng":
-                dataParser = sdngDataParser;
-                timeParser = sdngTimeParserFactory.create();
-                databaseWriter = new SdngInfluxWriter(dbName, influxDao, withTrace);
-                break;
-            case "gc":
-                dataParser = gcDataParser;
-                timeParser = gcTimeParserFactory.create();
-                databaseWriter = new GcInfluxWriter(dbName, influxDao, withTrace);
-                break;
-            case "top":
-                dataParser = topDataParser;
-                timeParser = topTimeParserFactory.create();
-                databaseWriter = new TopInfluxWriter(dbName, influxDao, withTrace);
-                break;
-            default:
-                String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
-                throw new IllegalArgumentException(errorMessage);
+        if (parsingMode == null) {
+            String errorMessage = "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode;
+            throw new IllegalArgumentException(errorMessage);
         }
 
-        IDataSetFactory dataSetFactory = dataParser.getDataSetFactory();
+        IDataParser dataParser = parsingMode.getDataParser();
+        ITimeParser timeParser = parsingMode.getTimeParser();
+        IDatabaseWriter databaseWriter = parsingMode.getDatabaseWriter(dbName, influxDao, withTrace);
+        IDataSetFactory dataSetFactory = parsingMode.getDataSetFactory();
+
         DataSetProvider dataSetProvider = new DataSetProvider(databaseWriter, dataSetFactory);
 
         parseLogFile(fileName, timezone, dataParser, timeParser, dataSetProvider);
