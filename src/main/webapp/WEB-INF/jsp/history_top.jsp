@@ -1,4 +1,5 @@
-<%@page import="ru.naumen.perfhouse.statdata.Constants"%>
+<%@page import="ru.naumen.sd40.log.parser.Constants"%>
+<%@page import="ru.naumen.sd40.log.parser.Top.TopConstants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
@@ -33,66 +34,21 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <%
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
-    Number avgLa[]=  (Number[])request.getAttribute(Constants.Top.AVG_LA);
-    Number avgCpu[]=  (Number[])request.getAttribute(Constants.Top.AVG_CPU);
-    Number avgMem[]=  (Number[])request.getAttribute(Constants.Top.AVG_MEM);
-    Number maxLa[]=  (Number[])request.getAttribute(Constants.Top.MAX_LA);
-    Number maxCpu[]=  (Number[])request.getAttribute(Constants.Top.MAX_CPU);
-    Number maxMem[]=  (Number[])request.getAttribute(Constants.Top.MAX_MEM);
-    
-  //Prepare links
-  	String path="";
-  	String custom = "";
-  	if(request.getAttribute("custom") == null){
-  	Object year = request.getAttribute("year");
-  	Object month = request.getAttribute("month");
-  	Object day = request.getAttribute("day");
-      
-      String countParam = (String)request.getParameter("count");
-      
-  	String params = "";
-  	String datePath = "";
-
-  	StringBuilder sb = new StringBuilder();
-
-
-  	if(countParam != null){
-      	params = sb.append("?count=").append(countParam).toString();
-  	}else{
-      	sb.append('/').append(year).append('/').append(month);
-      	if(!day.toString().equals("0")){
-          	sb.append('/').append(day);
-      	}
-      	datePath = sb.toString();
-  	}
-  	path = datePath + params;
-  	}
-  	else{
-  	    custom = "/custom";
-  	    Object from = request.getAttribute("from");
-  	  	Object to = request.getAttribute("to");
-  	  	Object maxResults = request.getAttribute("maxResults");
-  	  	
-  	  	StringBuilder sb = new StringBuilder();
-  	  	path = sb.append("?from=").append(from).append("&to=").append(to).append("&maxResults=").append(maxResults).toString();
-  	}
-      
+    Number avgLa[]=  (Number[])request.getAttribute(TopConstants.AVG_LA);
+    Number avgCpu[]=  (Number[])request.getAttribute(TopConstants.AVG_CPU);
+    Number avgMem[]=  (Number[])request.getAttribute(TopConstants.AVG_MEM);
+    Number maxLa[]=  (Number[])request.getAttribute(TopConstants.MAX_LA);
+    Number maxCpu[]=  (Number[])request.getAttribute(TopConstants.MAX_CPU);
+    Number maxMem[]=  (Number[])request.getAttribute(TopConstants.MAX_MEM);
 %>
 
 <div class="container">
 	<br>
     <h1>Performance data for "${client}"</h1>
-    <h3><a class="btn btn-success btn-lg" href="/">Client list</a></h3>
     <h4 id="date_range"></h4>
     <p>
         Feel free to hide/show specific data by clicking on chart's legend
     </p>
-    <ul class="nav nav-pills">
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %><%=path %>">Responses</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/actions<%=path %>">Performed actions</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/gc<%=path %>">Garbage Collection</a></li>
-		<li class="nav-item"><a class="nav-link active" >Top data</a></li>
-	</ul>
 </div>
 
 <div class="container">
