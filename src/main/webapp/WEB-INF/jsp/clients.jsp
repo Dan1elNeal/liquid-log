@@ -37,7 +37,7 @@
     		})
     		
     		$('#formMaxResults').val(100)
-    		$('#customForm').attr('action','/history/'+client+'/custom')
+    		$('#customForm').attr('action','/parsers/'+client+'/custom')
     		console.log(moment().format('zz'))
     	}
     </script>

@@ -3,6 +3,7 @@ package ru.naumen.sd40.log.parser.Top;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.DataType;
 import ru.naumen.perfhouse.writers.IDatabaseWriter;
 import ru.naumen.perfhouse.writers.TopInfluxWriter;
 import ru.naumen.sd40.log.parser.IDataParser;
@@ -14,6 +15,7 @@ public class TopMode implements IParsingMode {
     private TopDataParser dataParser;
     private TopTimeParserFactory timeParserFactory;
     private TopDataSetFactory dataSetFactory;
+    private DataType dataType = new DataType(TopConstants.getProps());
 
     @Autowired
     TopMode(TopDataParser dataParser, TopTimeParserFactory timeParserFactory, TopDataSetFactory dataSetFactory) {
@@ -40,5 +42,20 @@ public class TopMode implements IParsingMode {
     @Override
     public TopDataSetFactory getDataSetFactory() {
         return dataSetFactory;
+    }
+
+    @Override
+    public String getView() {
+        return "history_top";
+    }
+
+    @Override
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    @Override
+    public String getBeautifulParserName() {
+        return "Top data";
     }
 }
