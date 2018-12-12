@@ -3,6 +3,7 @@ package ru.naumen.sd40.log.parser.Sdng;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.DataType;
 import ru.naumen.perfhouse.writers.IDatabaseWriter;
 import ru.naumen.perfhouse.writers.SdngInfluxWriter;
 import ru.naumen.sd40.log.parser.IDataParser;
@@ -14,6 +15,7 @@ public class SdngMode implements IParsingMode {
     private SdngDataParser dataParser;
     private SdngTimeParserFactory timeParserFactory;
     private SdngDataSetFactory dataSetFactory;
+    private DataType dataType = new DataType(SdngConstants.getProps());
 
     @Autowired
     SdngMode(SdngDataParser dataParser, SdngTimeParserFactory timeParserFactory, SdngDataSetFactory dataSetFactory) {
@@ -40,5 +42,20 @@ public class SdngMode implements IParsingMode {
     @Override
     public SdngDataSetFactory getDataSetFactory() {
         return dataSetFactory;
+    }
+
+    @Override
+    public String getView() {
+        return "history_actions";
+    }
+
+    @Override
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    @Override
+    public String getBeautifulParserName() {
+        return "Performed actions";
     }
 }

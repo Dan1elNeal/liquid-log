@@ -1,31 +1,9 @@
 package ru.naumen.perfhouse.influx;
 
-import static ru.naumen.perfhouse.statdata.Constants.GarbageCollection.AVARAGE_GC_TIME;
-import static ru.naumen.perfhouse.statdata.Constants.GarbageCollection.GCTIMES;
-import static ru.naumen.perfhouse.statdata.Constants.GarbageCollection.MAX_GC_TIME;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.ADD_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.COMMENT_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.EDIT_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.GET_CATALOGS_ACTION;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.GET_DT_OBJECT_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.GET_FORM_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.LIST_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.PerformedActions.SEARCH_ACTIONS;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.COUNT;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.ERRORS;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.MAX;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.MEAN;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.PERCENTILE50;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.PERCENTILE95;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.PERCENTILE99;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.PERCENTILE999;
-import static ru.naumen.perfhouse.statdata.Constants.ResponseTimes.STDDEV;
-import static ru.naumen.perfhouse.statdata.Constants.Top.AVG_CPU;
-import static ru.naumen.perfhouse.statdata.Constants.Top.AVG_LA;
-import static ru.naumen.perfhouse.statdata.Constants.Top.AVG_MEM;
-import static ru.naumen.perfhouse.statdata.Constants.Top.MAX_CPU;
-import static ru.naumen.perfhouse.statdata.Constants.Top.MAX_LA;
-import static ru.naumen.perfhouse.statdata.Constants.Top.MAX_MEM;
+import static ru.naumen.sd40.log.parser.Gc.GcConstants.*;
+import static ru.naumen.sd40.log.parser.Sdng.SdngConstants.*;
+import static ru.naumen.sd40.log.parser.Responses.ResponsesConstants.*;
+import static ru.naumen.sd40.log.parser.Top.TopConstants.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import ru.naumen.perfhouse.statdata.Constants;
+import ru.naumen.sd40.log.parser.Constants;
 import ru.naumen.sd40.log.parser.Gc.GCData;
 import ru.naumen.sd40.log.parser.Sdng.ActionDoneData;
 import ru.naumen.sd40.log.parser.Sdng.ErrorData;

@@ -3,7 +3,7 @@ package ru.naumen.sd40.log.parser;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.perfhouse.writers.IDatabaseWriter;
 
-public interface IParsingMode<T extends IDataSet> {
+public interface IParsingMode<T extends IDataSet> extends IRenderMode {
     IDataParser getDataParser();
     ITimeParser getTimeParser();
     IDataSetFactory<T> getDataSetFactory();

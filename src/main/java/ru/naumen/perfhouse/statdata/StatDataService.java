@@ -16,6 +16,8 @@ import com.google.common.base.Joiner;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.perfhouse.statdata.influx.InfluxDateHelper;
 import ru.naumen.perfhouse.statdata.influx.InfluxDateRange;
+import ru.naumen.sd40.log.parser.Constants;
+import ru.naumen.sd40.log.parser.DataType;
 
 /**
  * Component for getting data from influx
