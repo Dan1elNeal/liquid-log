@@ -25,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 import ru.naumen.sd40.log.parser.Constants;
 import ru.naumen.sd40.log.parser.Gc.GCData;
+import ru.naumen.sd40.log.parser.Render.RenderConstants;
+import ru.naumen.sd40.log.parser.Render.RenderTimeData;
 import ru.naumen.sd40.log.parser.Sdng.ActionDoneData;
 import ru.naumen.sd40.log.parser.Sdng.ErrorData;
 import ru.naumen.sd40.log.parser.Top.TopData;
@@ -183,6 +185,30 @@ public class InfluxDAO
                 .addField(AVG_LA, data.getAvgLa()).addField(AVG_CPU, data.getAvgCpuUsage())
                 .addField(AVG_MEM, data.getAvgMemUsage()).addField(MAX_LA, data.getMaxLa())
                 .addField(MAX_CPU, data.getMaxCpu()).addField(MAX_MEM, data.getMaxMem()).build();
+        if (batch != null)
+        {
+            batch.getPoints().add(point);
+        }
+        else
+        {
+            influx.write(dbName, "autogen", point);
+        }
+    }
+
+    public void storeRender(BatchPoints batch, String dbName, long date, RenderTimeData data)
+    {
+        Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
+                .addField(RenderConstants.COUNT, data.getCount())
+                .addField(RenderConstants.MIN, data.getCount())
+                .addField(RenderConstants.MAX, data.getMax())
+                .addField(RenderConstants.MEAN, data.getMean())
+                .addField(RenderConstants.STDDEV, data.getStddev())
+                .addField(RenderConstants.PERCENTILE50, data.getPercent50())
+                .addField(RenderConstants.PERCENTILE95, data.getPercent95())
+                .addField(RenderConstants.PERCENTILE99, data.getPercent99())
+                .addField(RenderConstants.PERCENTILE999, data.getPercent999())
+                .build();
+
         if (batch != null)
         {
             batch.getPoints().add(point);

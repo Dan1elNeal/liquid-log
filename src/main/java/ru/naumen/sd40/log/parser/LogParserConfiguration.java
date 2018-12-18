@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.context.WebApplicationContext;
 import ru.naumen.sd40.log.parser.Gc.GcTimeParser;
+import ru.naumen.sd40.log.parser.Render.RenderTimeParser;
 import ru.naumen.sd40.log.parser.Sdng.SdngTimeParser;
 import ru.naumen.sd40.log.parser.Top.TopTimeParser;
 
@@ -27,5 +28,11 @@ public class LogParserConfiguration {
     @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public TopTimeParser topTimeParser() {
         return new TopTimeParser();
+    }
+
+    @Bean
+    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public RenderTimeParser renderTimeParser() {
+        return new RenderTimeParser();
     }
 }
