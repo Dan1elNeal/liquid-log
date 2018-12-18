@@ -1,10 +1,9 @@
-package ru.naumen.perfhouse.writers;
+package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.sd40.log.parser.*;
 
-public abstract class InfluxWriter<T extends IDataSet> implements IDatabaseWriter<Long, T> {
+public class InfluxWriter implements IDatabaseWriter<Long, IDataSet> {
     protected String dbName;
     protected BatchPoints points;
     protected InfluxDAO storage;
@@ -25,5 +24,18 @@ public abstract class InfluxWriter<T extends IDataSet> implements IDatabaseWrite
     @Override
     public void save() {
         storage.writeBatch(points);
+    }
+
+    @Override
+    public void write(Long key, IDataSet dataSet, boolean withTrace) {
+        dataSet.calculate();
+
+        if (withTrace) {
+            System.out.println(dataSet.getTrace());
+        }
+
+        if (!dataSet.isNan()) {
+            storage.storeLogs(points, dbName, key, dataSet);
+        }
     }
 }

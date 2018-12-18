@@ -9,16 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.*;
-import ru.naumen.perfhouse.writers.GcInfluxWriter;
-import ru.naumen.perfhouse.writers.IDatabaseWriter;
-import ru.naumen.perfhouse.writers.SdngInfluxWriter;
-import ru.naumen.perfhouse.writers.TopInfluxWriter;
-import ru.naumen.sd40.log.parser.Gc.GcDataParser;
-import ru.naumen.sd40.log.parser.Gc.GcTimeParserFactory;
-import ru.naumen.sd40.log.parser.Sdng.SdngDataParser;
-import ru.naumen.sd40.log.parser.Sdng.SdngTimeParserFactory;
-import ru.naumen.sd40.log.parser.Top.TopDataParser;
-import ru.naumen.sd40.log.parser.Top.TopTimeParserFactory;
 
 /**
  * Created by doki on 22.10.16.
@@ -57,10 +47,10 @@ public class LogParser {
 
         IDataParser dataParser = parsingMode.getDataParser();
         ITimeParser timeParser = parsingMode.getTimeParser();
-        IDatabaseWriter databaseWriter = parsingMode.getDatabaseWriter(dbName, influxDao, withTrace);
         IDataSetFactory dataSetFactory = parsingMode.getDataSetFactory();
 
-        DataSetProvider dataSetProvider = new DataSetProvider(databaseWriter, dataSetFactory);
+        IDatabaseWriter databaseWriter = new InfluxWriter(dbName, influxDao, withTrace);
+        DataSetProvider dataSetProvider = new DataSetProvider(databaseWriter, dataSetFactory, withTrace);
 
         parseLogFile(fileName, timezone, dataParser, timeParser, dataSetProvider);
 

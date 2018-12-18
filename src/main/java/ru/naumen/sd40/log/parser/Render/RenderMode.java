@@ -2,9 +2,6 @@ package ru.naumen.sd40.log.parser.Render;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.perfhouse.writers.IDatabaseWriter;
-import ru.naumen.perfhouse.writers.RenderInfluxWriter;
 import ru.naumen.sd40.log.parser.DataType;
 import ru.naumen.sd40.log.parser.IDataParser;
 import ru.naumen.sd40.log.parser.IParsingMode;
@@ -32,11 +29,6 @@ public class RenderMode implements IParsingMode {
     @Override
     public ITimeParser getTimeParser() {
         return this.timeParserFactory.create();
-    }
-
-    @Override
-    public IDatabaseWriter getDatabaseWriter(String dbName, InfluxDAO influxDAO, boolean withTrace) {
-        return new RenderInfluxWriter(dbName, influxDAO, withTrace);
     }
 
     @Override

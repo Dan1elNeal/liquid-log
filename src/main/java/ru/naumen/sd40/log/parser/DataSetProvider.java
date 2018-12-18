@@ -1,16 +1,16 @@
 package ru.naumen.sd40.log.parser;
 
-import ru.naumen.perfhouse.writers.IDatabaseWriter;
-
 public class DataSetProvider<T extends IDataSet> {
     private IDatabaseWriter<Long, T> writer;
     private long currentKey;
     private IDataSetFactory<T> dataSetFactory;
     private T currentDataSet = null;
+    private boolean withTrace;
 
-    public DataSetProvider(IDatabaseWriter<Long, T> writer, IDataSetFactory<T> dataSetFactory) {
+    public DataSetProvider(IDatabaseWriter<Long, T> writer, IDataSetFactory<T> dataSetFactory, boolean withTrace) {
         this.writer = writer;
         this.dataSetFactory = dataSetFactory;
+        this.withTrace = withTrace;
     }
 
     public T get(Long key) {
@@ -22,7 +22,7 @@ public class DataSetProvider<T extends IDataSet> {
         }
 
         if (key != currentKey) {
-            writer.write(currentKey, currentDataSet);
+            writer.write(currentKey, currentDataSet, withTrace);
             currentKey = key;
             currentDataSet = dataSetFactory.create();
         }
@@ -32,7 +32,7 @@ public class DataSetProvider<T extends IDataSet> {
 
     public void flush() {
         if (currentDataSet != null) {
-            writer.write(currentKey, currentDataSet);
+            writer.write(currentKey, currentDataSet, withTrace);
             currentDataSet = null;
         }
     }
