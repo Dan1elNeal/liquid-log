@@ -45,9 +45,8 @@
     </p>
 </div>
 
-<!-- Gc chart -->
-<div class="container" id="gc">
-<div id="gc-chart-container" style="height: 600px"></div>
+<div class="container">
+<div id="render-chart-container" style="height: 600px"></div>
 <div class="scroll-container">
 	<table class="table table-fixed header-fixed">
         <thead class="thead-inverse">
@@ -175,13 +174,13 @@ Highcharts.setOptions({
 	}
 });
 
-var myChart = Highcharts.chart('gc-chart-container', {
+var myChart = Highcharts.chart('render-chart-container', {
         chart: {
                 zoomType: 'x,y'
             },
 
         title: {
-            text: 'Garbage collection'
+            text: 'Render Time Information'
         },
 
         tooltip: {
