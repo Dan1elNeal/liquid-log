@@ -65,10 +65,6 @@ public class LogParser {
         parseLogFile(fileName, timezone, dataParser, timeParser, dataSetProvider);
 
         databaseWriter.save();
-
-        if (withTrace) {
-            System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
-        }
     }
 
     private void parseLogFile(
