@@ -17,8 +17,8 @@ public class RenderDataParser implements IDataParser<RenderDataSet> {
         Matcher renderTimeMatcher = RENDER_TIME_PATTERN.matcher(line);
 
         if (renderTimeMatcher.find()) {
-            String group0 = renderTimeMatcher.group(1);
-            int renderTime = Integer.valueOf(group0);
+            String renderTimeString = renderTimeMatcher.group(1);
+            int renderTime = Integer.valueOf(renderTimeString);
             renderTimeData.addTime(renderTime);
         }
     }

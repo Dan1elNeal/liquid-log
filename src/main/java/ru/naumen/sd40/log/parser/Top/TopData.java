@@ -2,10 +2,8 @@ package ru.naumen.sd40.log.parser.Top;
 
 import static ru.naumen.sd40.log.parser.NumberUtils.getSafeDouble;
 import static ru.naumen.sd40.log.parser.NumberUtils.roundToTwoPlaces;
-import static ru.naumen.sd40.log.parser.Top.TopConstants.*;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;;import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  * Cpu usage data, acquired from top output

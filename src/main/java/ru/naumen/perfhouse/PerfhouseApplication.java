@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
-import java.text.ParseException;
-
 @SpringBootApplication(scanBasePackages = {"ru.naumen"})
 public class PerfhouseApplication extends SpringBootServletInitializer {
     @Override
@@ -15,7 +13,7 @@ public class PerfhouseApplication extends SpringBootServletInitializer {
         return application.sources(PerfhouseApplication.class);
     }
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         SpringApplication.run(PerfhouseApplication.class, args);
     }
 

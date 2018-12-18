@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ru.naumen.sd40.log.parser.Top.TopConstants.*;
-import static ru.naumen.sd40.log.parser.Top.TopConstants.MAX_CPU;
-import static ru.naumen.sd40.log.parser.Top.TopConstants.MAX_MEM;
 
 public class TopDataSet implements IDataSet {
     private TopData cpuData = new TopData();
