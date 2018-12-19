@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser.Gc;
+package ru.naumen.sd40.log.parser.Render;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,15 +7,15 @@ import ru.naumen.sd40.log.parser.IDataParser;
 import ru.naumen.sd40.log.parser.IParsingMode;
 import ru.naumen.sd40.log.parser.ITimeParser;
 
-@Component("gc")
-public class GcMode implements IParsingMode {
-    private GcDataParser dataParser;
-    private GcTimeParserFactory timeParserFactory;
-    private GcDataSetFactory dataSetFactory;
-    private DataType dataType = new DataType(GcConstants.getProps());
+@Component("render")
+public class RenderMode implements IParsingMode {
+    private RenderDataParser dataParser;
+    private RenderTimeParserFactory timeParserFactory;
+    private RenderDataSetFactory dataSetFactory;
+    private DataType dataType = new DataType(RenderConstants.getProps());
 
     @Autowired
-    GcMode(GcDataParser dataParser, GcTimeParserFactory timeParserFactory, GcDataSetFactory dataSetFactory) {
+    RenderMode(RenderDataParser dataParser, RenderTimeParserFactory timeParserFactory, RenderDataSetFactory dataSetFactory) {
         this.dataParser = dataParser;
         this.timeParserFactory = timeParserFactory;
         this.dataSetFactory = dataSetFactory;
@@ -32,13 +32,13 @@ public class GcMode implements IParsingMode {
     }
 
     @Override
-    public GcDataSetFactory getDataSetFactory() {
+    public RenderDataSetFactory getDataSetFactory() {
         return dataSetFactory;
     }
 
     @Override
     public String getView() {
-        return "history_gc";
+        return "history_render";
     }
 
     @Override
@@ -48,6 +48,6 @@ public class GcMode implements IParsingMode {
 
     @Override
     public String getBeautifulParserName() {
-        return "Garbage Collection";
+        return "Render";
     }
 }
